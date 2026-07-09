@@ -96,7 +96,7 @@ alc_admin = Alconna(
     Subcommand(
         "record",
         Args["target", At],
-        Args["reason", StrMulti],
+        Args["reason", StrMulti, None],
         alias={"记录"},
     ),
     Subcommand(
@@ -330,7 +330,10 @@ async def credits_user(target: At, number: int) -> None:
 
 
 @admin.assign("record")
-async def record_user(target: At, reason: str) -> None:
+async def record_user(target: At, reason: str | None) -> None:
+    if reason is None:
+        await UniMessage.text("请输入记录内容").finish()
+
     user_info = await get_user(target.target)
     datetime_now = datetime.now(tz=timezone(timedelta(hours=8)))
     if user_info:
