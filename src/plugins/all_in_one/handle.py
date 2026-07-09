@@ -163,14 +163,17 @@ async def user_bind(event: Event, username: str) -> None:
         mc_user = await get_mc_info(username)
         mc_body = await get_mc_body(username)
 
-        user_info = UserInfo(
-            qqid=user_id,
-            username=mc_user.name,
-            uuid=mc_user.uuid,
-            status=UserStatus.BIND.value,
-            status_extra=UserStatusExtra.NORMAL.value,
-        )
-        await update_user(user_info)
+        if await get_user(user_id):
+            await UniMessage.at(user_id).text("当前已绑定MC账号").finish()
+        else:
+            user_info = UserInfo(
+                qqid=user_id,
+                username=mc_user.name,
+                uuid=mc_user.uuid,
+                status=UserStatus.BIND.value,
+                status_extra=UserStatusExtra.NORMAL.value,
+            )
+            await update_user(user_info)
 
         results = manage_mc_whitelist(
             username,
