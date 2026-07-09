@@ -4,7 +4,6 @@ from pydantic import BaseModel
 
 
 class UserStatus(Enum):
-    UNBIND = "未绑定"
     BIND = "已绑定"
     BANNED = "已封禁"
 

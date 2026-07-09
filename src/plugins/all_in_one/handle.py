@@ -209,9 +209,7 @@ async def user_unbind(event: Event) -> None:
                 "\n".join(f"{result[0]}: {result[1]}" for result in results)
             ).send()
 
-            user_info.status = UserStatus.UNBIND.value
-
-            await update_user(user_info)
+            await remove_user(user_id)
 
     except Exception as e:
         await UniMessage.at(user_id).text(f"解绑失败: {e}").send()

@@ -1,7 +1,5 @@
-from collections.abc import Sequence
-
 from nonebot_plugin_orm import Model, get_session
-from sqlalchemy import JSON, TEXT, Integer, select
+from sqlalchemy import JSON, TEXT, Integer, delete, select
 from sqlalchemy.orm import Mapped, mapped_column
 
 
@@ -17,7 +15,9 @@ class UserInfo(Model):
     reason_extra: Mapped[list[str | None]] = mapped_column(
         JSON, nullable=False, default=[]
     )
-    credits: Mapped[int | None] = mapped_column(Integer, nullable=False, default=0)
+    credits: Mapped[int | None] = mapped_column(
+        Integer, nullable=False, default=0
+    )
 
 
 async def update_user(user: UserInfo) -> UserInfo:
@@ -38,3 +38,11 @@ async def get_user(
         stmt = select(UserInfo).where(UserInfo.qqid == qqid)
         result = await session.execute(stmt)
         return result.scalar_one_or_none()
+
+
+async def remove_user(qqid: str) -> None:
+    session = get_session()
+    async with session:
+        stmt = delete(UserInfo).where(UserInfo.qqid == qqid)
+        await session.execute(stmt)
+        await session.commit()

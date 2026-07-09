@@ -6,7 +6,7 @@ from tenacity import retry, stop_after_attempt, wait_exponential
 
 from .model import MCUser
 
-ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"  # noqa: E501
+ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"
 
 
 @retry(
@@ -30,7 +30,9 @@ async def get_mc_info(mc_name: str) -> MCUser:
 )
 async def get_mc_body(mc_name: str) -> bytes:
     async with AsyncClient(headers={"User-Agent": ua}) as client:
-        response = await client.get(f"https://mc-heads.net/body/{mc_name}/right")
+        response = await client.get(
+            f"https://mc-heads.net/body/{mc_name}/right"
+        )
         response.raise_for_status()
         return response.content
 
