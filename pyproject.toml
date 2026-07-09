@@ -88,6 +88,7 @@ select = [
 ]
 ignore = [
     "E402",  # module-import-not-at-top-of-file  # nonebot2 require() violates this
+    "E501",  # line-too-long 
     "B008",  # function-call-in-default-argument  # nonebot2 Depends() without Annotated violates this
     "UP037", # quoted-annotation
     # "RUF001",  # ambiguous-unicode-character-string

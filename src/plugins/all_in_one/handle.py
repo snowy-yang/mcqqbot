@@ -1,4 +1,3 @@
-import asyncio
 from datetime import datetime, timedelta, timezone
 
 from arclet.alconna import Alconna, Args, StrMulti, Subcommand
@@ -38,7 +37,11 @@ async def is_admin(event: Event) -> bool:
         return False
 
     user_info = await get_user(user_id)
-    return user_info.status_extra == UserStatusExtra.ADMIN.value if user_info else False
+    return (
+        user_info.status_extra == UserStatusExtra.ADMIN.value
+        if user_info
+        else False
+    )
 
 
 alc_user = Alconna(
@@ -169,8 +172,7 @@ async def user_bind(event: Event, username: str) -> None:
         )
         await update_user(user_info)
 
-        results = await asyncio.to_thread(
-            manage_mc_whitelist,
+        results = manage_mc_whitelist(
             username,
             config.MC_SERVER_RCON,
             "add",
@@ -196,8 +198,7 @@ async def user_unbind(event: Event) -> None:
         if not user_info:
             await UniMessage.at(user_id).text("当前未绑定MC账号").finish()
         else:
-            results = await asyncio.to_thread(
-                manage_mc_whitelist,
+            results = manage_mc_whitelist(
                 user_info.username,
                 config.MC_SERVER_RCON,
                 "remove",
@@ -277,8 +278,7 @@ async def ban_user(target: At, reason: str) -> None:
     if not user_info:
         await UniMessage.text("用户未绑定MC账号").finish()
     else:
-        results = await asyncio.to_thread(
-            manage_mc_banned_player,
+        results = manage_mc_banned_player(
             user_info.username,
             config.MC_SERVER_RCON,
             "ban",
@@ -299,8 +299,7 @@ async def unban_user(target: At) -> None:
     if not user_info:
         await UniMessage.text("用户未绑定MC账号").finish()
     else:
-        results = await asyncio.to_thread(
-            manage_mc_banned_player,
+        results = manage_mc_banned_player(
             user_info.username,
             config.MC_SERVER_RCON,
             "unban",
@@ -373,8 +372,7 @@ async def remove_user(target: At) -> None:
 
 @whitelist.assign("add")
 async def whitelist_add(username: str) -> None:
-    results = await asyncio.to_thread(
-        manage_mc_whitelist,
+    results = manage_mc_whitelist(
         username,
         config.MC_SERVER_RCON,
         "add",
@@ -388,8 +386,7 @@ async def whitelist_add(username: str) -> None:
 
 @whitelist.assign("remove")
 async def whitelist_remove(username: str) -> None:
-    results = await asyncio.to_thread(
-        manage_mc_whitelist,
+    results = manage_mc_whitelist(
         username,
         config.MC_SERVER_RCON,
         "remove",
