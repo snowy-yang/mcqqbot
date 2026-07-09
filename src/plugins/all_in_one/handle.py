@@ -90,7 +90,7 @@ alc_admin = Alconna(
     Subcommand(
         "credits",
         Args["target", At],
-        Args["number", int],
+        Args["number", str],
         alias={"点数"},
     ),
     Subcommand(
@@ -319,10 +319,14 @@ async def unban_user(target: At) -> None:
 
 
 @admin.assign("credits")
-async def credits_user(target: At, number: int) -> None:
+async def credits_user(target: At, number: str) -> None:
     user_info = await get_user(target.target)
+
     if user_info:
-        user_info.credits = number
+        if number.startswith(("+", "-")) and user_info.credits is not None:
+            user_info.credits += int(number[1:])
+        else:
+            user_info.credits = int(number)
         await update_user(user_info)
         await UniMessage.text("点数修改成功").finish()
     else:
