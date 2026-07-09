@@ -79,7 +79,7 @@ alc_admin = Alconna(
     Subcommand(
         "ban",
         Args["target", At],
-        Args["reason", StrMulti],
+        Args["reason", StrMulti, None],
         alias={"封禁"},
     ),
     Subcommand(
@@ -272,7 +272,10 @@ async def server_status() -> None:
 
 
 @admin.assign("ban")
-async def ban_user(target: At, reason: str) -> None:
+async def ban_user(target: At, reason: str | None) -> None:
+    if reason is None:
+        await UniMessage.text("请输入封禁原因").finish()
+
     user_info = await get_user(target.target)
 
     if not user_info:
