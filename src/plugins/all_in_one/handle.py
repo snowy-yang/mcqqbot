@@ -184,8 +184,7 @@ async def user_bind(event: Event, username: str) -> None:
         ).send()
 
     except Exception as e:
-        await UniMessage.at(user_id).text(f"绑定失败: {e}").send()
-        raise
+        await UniMessage.at(user_id).text(f"绑定失败: {e}").finish()
 
     await UniMessage.at(user_id).image(raw=mc_body).text("绑定成功").finish()
 
@@ -212,8 +211,7 @@ async def user_unbind(event: Event) -> None:
             await remove_user(user_id)
 
     except Exception as e:
-        await UniMessage.at(user_id).text(f"解绑失败: {e}").send()
-        raise
+        await UniMessage.at(user_id).text(f"解绑失败: {e}").finish()
 
     await UniMessage.at(user_id).text(" 解绑成功").finish()
 
