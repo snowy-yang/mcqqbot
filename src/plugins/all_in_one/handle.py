@@ -31,11 +31,10 @@ def group_enabled(event: Event) -> bool:
 
 
 async def is_admin(event: Event) -> bool:
-    try:
-        user_id = event.get_user_id()
-    except ValueError:
+    if not isinstance(event, GroupMessageEvent):
         return False
 
+    user_id = event.get_user_id()
     user_info = await get_user(user_id)
     return (
         user_info.status_extra == UserStatusExtra.ADMIN.value
